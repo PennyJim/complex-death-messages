@@ -1,3 +1,7 @@
+---@class ComplexDeathGlobal
+---@field lastDamage table<integer,{damage:LuaDamagePrototype, force:LuaForce?}>
+global = {}
+
 ---Disables Better Chat's handler and registers our own
 ---@param event defines.events
 ---@param func fun(EventData)
@@ -32,15 +36,18 @@ end, {
 	}
 })
 
+---@param event EventData.on_player_died
 local newDeathListener = function (event)
 	local player = game.get_player(event.player_index)
 	if not player then return log("No one died???") end
 	if not player.character then return log("Player.character doesn't exist on death, change to pre-death") end
+	---@type LocalisedString
 	local message = {
 		"multiplayer.player-died",
 		player.name,
-		player.character.gps_tag --[[@as LocalisedString]]
+		player.character.gps_tag
 	}
+	---@cast message -?
 	if event.cause then
 		local cause_name = event.cause.localised_name
 		if event.cause.name  == "character" and event.cause.player then
@@ -67,7 +74,6 @@ local newDeathListener = function (event)
 				cause_name = old_cause
 			end
 		end
-
 		message[1] = "multiplayer.player-died-by"
 		message[4] = message[3]
 		message[3] = cause_name
@@ -77,7 +83,7 @@ end
 
 
 script.on_init(function ()
-	global.lastDamage = {} --[[@as table<integer,{damage: LuaDamagePrototype, force: LuaForce?}>]]
+	global.lastDamage = {}
 	replace_event(defines.events.on_player_died, newDeathListener)
 end)
 script.on_load(function ()
