@@ -87,15 +87,35 @@ local newDeathListener = function (event)
 		killer = cause.localised_name
 		killer_color = last_damage.force.color
 
-		if cause.name == "character" and cause.player then
-			killer = cause.player.name
-			killer_color = cause.player.chat_color
+		if cause.name == "character" and (cause.player or cause.associated_player) then
+			local cause_player = cause.player or cause.associated_player
+			---@cast cause_player -?
+			killer = cause_player.name
+			killer_color = cause_player.chat_color
 		elseif cause.type == "car" or cause.type == "spider-vehicle" then
-			local driver = cause.get_driver() or {}
-			local gunner = cause.get_passenger() or {}
+			local driver_entity = cause.get_driver()
+			local gunner_entity = cause.get_passenger()
 
-			driver = driver.player
-			gunner = gunner.player
+			---@type LuaPlayer?, LuaPlayer?
+			local driver, gunner
+
+			-- Get the player for the driver
+			if driver_entity and driver_entity.object_name ~= "LuaPlayer" then
+				---@cast driver_entity LuaEntity
+				driver = driver_entity.player or driver_entity.associated_player --[[@as LuaPlayer?]]
+			else
+				---@cast driver_entity LuaPlayer?
+				driver = driver_entity --[[@as LuaPlayer?]]
+			end
+
+			-- Get the player for the gunner
+			if gunner_entity and gunner_entity.object_name ~= "LuaPlayer" then
+				---@cast gunner_entity LuaEntity
+				gunner = gunner_entity.player or gunner_entity.associated_player --[[@as LuaPlayer?]]
+			else
+				---@cast gunner_entity LuaPlayer?
+				gunner = gunner_entity
+			end
 
 			---@type LuaPlayer?
 			local killer_player
