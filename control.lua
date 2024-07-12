@@ -9,11 +9,11 @@ local gruesome = false
 
 local gruesome_counts = {
 	["physical"]	= 2,
-	["impact"]		= 3,
-	["fire"]			= 2,
-	["acid"]			= 1,
+	["impact"]		= 4,
+	["fire"]			= 3,
+	["acid"]			= 2,
 	["poison"]		= 1,
-	["explosion"]	= 2,
+	["explosion"]	= 3,
 	["laser"]			= 2,
 	["electric"]	= 2,
 }
