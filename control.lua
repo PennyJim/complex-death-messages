@@ -53,44 +53,78 @@ local newDeathListener = function (event)
 	local player = game.get_player(event.player_index)
 	if not player then return log("No one died???") end
 	if not player.character then return log("Player.character doesn't exist on death, change to pre-death") end
-	---@type LocalisedString
-	local message = {
-		"multiplayer.player-died",
-		player.name,
-		player.character.gps_tag
-	}
-	---@cast message -?
+
+	local key_group = "complex-deaths."
+	local key = ""
+	local name = player.name
+	local gps = player.character.gps_tag
+	local color = player.chat_color
+
+	local last_damage = global.lastDamage[player.index]
+	local damage_type = "physical"
+	if last_damage and last_damage.damage.valid then
+		key = last_damage.damage.name
+	end
+	if not gruesome_counts[damage_type] then
+		log("Unknown damage type: "..damage_type)
+		damage_type = "physical"
+	end
+	key = damage_type
+
+	---@type LocalisedString, Color.0?, LocalisedString
+	local killer, killer_color, weapon
+
 	if event.cause then
-		local cause_name = event.cause.localised_name
-		if event.cause.name  == "character" and event.cause.player then
-			cause_name = event.cause.player.name
-		elseif event.cause.type == "car" or event.cause.type == "spider-vehicle" then
-			local vehicle = event.cause --[[@as LuaEntity]]
-			local last_damage = global.lastDamage[event.player_index]
-			local driver = vehicle.get_driver() or {}
-			local gunner = vehicle.get_passenger() or {}
-			if driver.player then driver = driver.player end
-			if gunner.player then gunner = gunner.player end
-			local old_cause = cause_name
-			if last_damage.damage.name == "impact" then
-		---@diagnostic disable-next-line: need-check-nil
-				cause_name = driver.name
+		local cause = event.cause
+		---@cast cause -?
+		killer = cause.localised_name
+
+		if cause.name == "character" and cause.player then
+			killer = cause.player.name
+		elseif cause.type == "car" or cause.type == "spider-vehicle" then
+			local driver = cause.get_driver() or {}
+			local gunner = cause.get_passenger() or {}
+
+			driver = driver.player
+			gunner = gunner.player
+
+			---@type LuaPlayer?
+			local killer_player
+			if key == "impact-by-with" then
+				killer_player = driver
 			else
-			---@diagnostic disable-next-line: need-check-nil
-				cause_name = (vehicle.driver_is_gunner and driver.name) or gunner.name or driver.name
+				killer_player = (cause.driver_is_gunner and driver) or gunner or driver
 			end
-		
-			if cause_name then
-				cause_name = {"complex-deaths.bc-by-with", cause_name, old_cause}
-			else
-				cause_name = old_cause
+
+			if killer_player then
+				weapon = killer
+				killer = killer_player.name
+				killer_color = killer_player.color
 			end
 		end
-		message[1] = "multiplayer.player-died-by"
-		message[4] = message[3]
-		message[3] = cause_name
 	end
-	send_message(message, player.chat_color, "global")
+
+	if killer then
+		key = key.."-by"
+		killer_color = killer_color or color
+	else
+		killer_color = {}
+	end
+
+	if weapon then
+		key = key.."-with"
+	end
+
+	if gruesome then
+		key_group = "gruesome-deaths."
+		key = math.random(gruesome_counts[damage_type]).."-"..key
+	end
+
+
+	send_message({
+		key_group..key, name, gps, killer, weapon,
+		killer_color.r, killer_color.g, killer_color.b
+	}, color, "global")
 end
 
 
