@@ -2,6 +2,17 @@
 ---@field lastDamage table<integer,{damage:LuaDamagePrototype, force:LuaForce?}>
 global = {}
 
+local gruesome_counts = {
+	["physical"]	= 2,
+	["impact"]		= 3,
+	["fire"]			= 2,
+	["acid"]			= 1,
+	["poison"]		= 1,
+	["explosion"]	= 2,
+	["laser"]			= 2,
+	["electric"]	= 2,
+}
+
 ---Disables Better Chat's handler and registers our own
 ---@param event defines.events
 ---@param func fun(EventData)
