@@ -14,6 +14,13 @@ local gruesome_counts = {
 	["electric"]	= 2,
 }
 
+local train_types = {
+	["locomotive"] = true,
+	["artillery-wagon"] = true,
+	["cargo-wagon"] = true,
+	["fluid-wagon"] = true,
+}
+
 ---Disables Better Chat's handler and registers our own
 ---@param event defines.events
 ---@param func fun(EventData)
@@ -102,6 +109,27 @@ local newDeathListener = function (event)
 				weapon = killer
 				killer = killer_player.name
 				killer_color = killer_player.chat_color
+			end
+		elseif train_types[cause.type] then
+			killer = cause.backer_name
+			killer_color = cause.force.color
+
+			if cause.train.manual_mode then
+				local driver_entity = cause.get_driver()
+				---@type LuaPlayer?
+				local driver
+
+				if driver_entity and driver_entity.object_name ~= "LuaPlayer" then
+					driver = driver_entity.player or driver_entity.associated_player --[[@as LuaPlayer?]]
+				else
+					---@cast driver_entity LuaPlayer?
+					driver = driver_entity
+				end
+
+				if driver then
+					killer = driver.name
+					killer_color = driver.chat_color
+				end
 			end
 		end
 	end
