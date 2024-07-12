@@ -151,6 +151,12 @@ local newDeathListener = function (event)
 					driver = driver_entity
 				end
 
+				if not driver then
+					_, driver = next(cause.train.passengers)
+					-- The train does not always have any passengers
+					---@cast driver +?
+				end
+
 				if driver then
 					weapon = killer
 					killer = driver.name
