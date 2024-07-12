@@ -92,7 +92,7 @@ local newDeathListener = function (event)
 
 			---@type LuaPlayer?
 			local killer_player
-			if key == "impact-by-with" then
+			if damage_type == "impact" then
 				killer_player = driver
 			else
 				killer_player = (cause.driver_is_gunner and driver) or gunner or driver
@@ -113,7 +113,7 @@ local newDeathListener = function (event)
 		killer_color = {}
 	end
 
-	if killer == player then
+	if killer == player.name then
 		key = key.."-self"
 		killer = nil
 		killer_color = {}
