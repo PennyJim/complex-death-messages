@@ -39,6 +39,7 @@ function send_message(message, color, send_level, recipient)
 end
 
 
+---@param event EventData.on_entity_damaged
 script.on_event(defines.events.on_entity_damaged, function (event)
 	global.lastDamage = global.lastDamage or {} --[[@as table<integer,{damage: LuaDamagePrototype, force: LuaForce?}>]]
 	if not event.entity.name == "character" then return log("Filter is bad!, got "..event.entity.type) end
@@ -88,7 +89,11 @@ local newDeathListener = function (event)
 	if event.cause then
 		local cause = event.cause
 		---@cast cause -?
-		killer = cause.backer_name or cause.localised_name
+		if cause.supports_backer_name() then
+			killer = {"", cause.localised_name, " ", cause.backer_name}
+		else
+			killer = cause.localised_name
+		end
 		killer_color = last_damage.force.color
 
 		if cause.name == "character" and (cause.player or cause.associated_player) then
