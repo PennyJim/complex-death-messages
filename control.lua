@@ -1,5 +1,9 @@
+---@class damage_info
+---@field damage LuaDamagePrototype
+---@field force LuaForce?
+
 ---@class ComplexDeathGlobal
----@field lastDamage table<integer,{damage:LuaDamagePrototype, force:LuaForce?}>
+---@field lastDamage table<integer,damage_info>
 global = {}
 local gruesome = false
 
@@ -41,7 +45,7 @@ script.on_event(defines.events.on_entity_damaged, function (event)
 	global.lastDamage[event.entity.player.index] = {
 		damage = event.damage_type,
 		force = event.force,
-	}
+	} --[[@as damage_info]]
 end, {
 	{
 		filter = "type",
