@@ -84,7 +84,13 @@ local newDeathListener = function (event)
 	if event.cause then
 		local cause = event.cause
 		---@cast cause -?
-		killer = cause.localised_name
+		if cause.supports_backer_name() then
+			-- Should only be trains, and that has special handling
+			-- but if there's an edge case this'll catch it
+			killer = cause.backer_name
+		else
+			killer = cause.localised_name
+		end
 		killer_color = last_damage.force.color
 
 		if cause.name == "character" and (cause.player or cause.associated_player) then
