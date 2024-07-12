@@ -63,7 +63,7 @@ local newDeathListener = function (event)
 	local last_damage = global.lastDamage[player.index]
 	local damage_type = "physical"
 	if last_damage and last_damage.damage.valid then
-		key = last_damage.damage.name
+		damage_type = last_damage.damage.name
 	end
 	if not gruesome_counts[damage_type] then
 		log("Unknown damage type: "..damage_type)
@@ -78,9 +78,11 @@ local newDeathListener = function (event)
 		local cause = event.cause
 		---@cast cause -?
 		killer = cause.localised_name
+		killer_color = last_damage.force.color
 
 		if cause.name == "character" and cause.player then
 			killer = cause.player.name
+			killer_color = cause.player.chat_color
 		elseif cause.type == "car" or cause.type == "spider-vehicle" then
 			local driver = cause.get_driver() or {}
 			local gunner = cause.get_passenger() or {}
@@ -99,7 +101,7 @@ local newDeathListener = function (event)
 			if killer_player then
 				weapon = killer
 				killer = killer_player.name
-				killer_color = killer_player.color
+				killer_color = killer_player.chat_color
 			end
 		end
 	end
@@ -122,7 +124,7 @@ local newDeathListener = function (event)
 
 
 	send_message({
-		key_group..key, name, gps, killer, weapon,
+		key_group..key, name, gps, killer, weapon or "",
 		killer_color.r, killer_color.g, killer_color.b
 	}, color, "global")
 end
