@@ -1,6 +1,7 @@
 ---@class ComplexDeathGlobal
 ---@field lastDamage table<integer,{damage:LuaDamagePrototype, force:LuaForce?}>
 global = {}
+local gruesome = false
 
 local gruesome_counts = {
 	["physical"]	= 2,
@@ -95,9 +96,16 @@ end
 
 script.on_init(function ()
 	global.lastDamage = {}
+	gruesome = settings.global["complex-deaths-do-gruesome"].value --[[@as boolean]]
 	replace_event(defines.events.on_player_died, newDeathListener)
 end)
 script.on_load(function ()
 	global.lastDamage = global.lastDamage or {}
+	gruesome = settings.global["complex-deaths-do-gruesome"].value --[[@as boolean]]
 	replace_event(defines.events.on_player_died, newDeathListener)
+end)
+---@param event EventData.on_runtime_mod_setting_changed
+script.on_event(defines.events.on_runtime_mod_setting_changed, function (event)
+	if event.setting ~= "complex-deaths-do-gruesome" then return end
+	gruesome = settings.global["complex-deaths-do-gruesome"].value --[[@as boolean]]
 end)
