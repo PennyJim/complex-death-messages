@@ -113,7 +113,11 @@ local newDeathListener = function (event)
 		killer_color = {}
 	end
 
-	if weapon then
+	if killer == player then
+		key = key.."-self"
+		killer = nil
+		killer_color = {}
+	elseif weapon then
 		key = key.."-with"
 	end
 
