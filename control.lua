@@ -201,16 +201,16 @@ end
 
 script.on_init(function ()
 	global.lastDamage = {}
-	basic = settings.global["complex-deaths-do-gruesome"].value --[[@as boolean]]
+	basic = settings.global["complex-deaths-basic-messages"].value --[[@as boolean]]
 	replace_event(defines.events.on_player_died, newDeathListener)
 end)
 script.on_load(function ()
 	global.lastDamage = global.lastDamage or {}
-	basic = settings.global["complex-deaths-do-gruesome"].value --[[@as boolean]]
+	basic = settings.global["complex-deaths-basic-messages"].value --[[@as boolean]]
 	replace_event(defines.events.on_player_died, newDeathListener)
 end)
 ---@param event EventData.on_runtime_mod_setting_changed
 script.on_event(defines.events.on_runtime_mod_setting_changed, function (event)
-	if event.setting ~= "complex-deaths-do-gruesome" then return end
-	basic = settings.global["complex-deaths-do-gruesome"].value --[[@as boolean]]
+	if event.setting ~= "complex-deaths-basic-messages" then return end
+	basic = settings.global["complex-deaths-basic-messages"].value --[[@as boolean]]
 end)
