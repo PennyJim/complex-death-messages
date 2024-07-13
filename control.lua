@@ -68,7 +68,9 @@ local newDeathListener = function (event)
 
 	local key_group = "complex-deaths."
 	local key = ""
+	---@type LocalisedString|string
 	local name = player.name
+	---@cast name -?
 	local gps = player.character.gps_tag
 	local color = player.chat_color
 
@@ -83,8 +85,10 @@ local newDeathListener = function (event)
 	end
 	key = damage_type
 
-	---@type LocalisedString, Color.0?, LocalisedString
-	local killer, killer_color, weapon
+	---@type LocalisedString, Color?
+	local killer, killer_color
+	---@type LocalisedString, Color?
+	local weapon, weapon_color
 
 	if event.cause then
 		local cause = event.cause
@@ -136,6 +140,7 @@ local newDeathListener = function (event)
 
 			if killer_player then
 				weapon = killer
+				weapon_color = killer_color
 				killer = killer_player.name
 				killer_color = killer_player.chat_color
 			end
@@ -164,6 +169,7 @@ local newDeathListener = function (event)
 
 				if driver then
 					weapon = killer
+					weapon_color = killer_color
 					killer = driver.name
 					killer_color = driver.chat_color
 				end
@@ -173,17 +179,35 @@ local newDeathListener = function (event)
 
 	if killer then
 		key = key.."-by"
+		local killer_name = killer
+		-- Color the killer's name
 		killer_color = killer_color or color
-	else
-		killer_color = {}
-	end
+		killer = {
+			"complex-deaths.colored",
+			killer,
+			killer_color.r,
+			killer_color.g,
+			killer_color.b
+		}
 
-	if killer == player.name then
-		key = key.."-self"
-		killer = nil
-		killer_color = {}
-	elseif weapon then
-		key = key.."-with"
+		if killer_name == player.name then
+			-- Self kill
+			key = key.."-self"
+			-- Don't pass an unused parameter
+			killer = nil
+		elseif weapon then
+			-- Murder with weapon
+			key = key.."-with"
+			-- Color the weapon name
+			weapon_color = weapon_color or killer_color or color
+			weapon = {
+				"complex-deaths.colored",
+				weapon,
+				weapon_color.r,
+				weapon_color.g,
+				weapon_color.b,
+			}
+		end
 	end
 
 	if not basic then
@@ -191,10 +215,21 @@ local newDeathListener = function (event)
 		key = math.random(gruesome_counts[damage_type]).."-"..key
 	end
 
+	-- TODO: Make a setting at some point
+	-- probably pivot off of better-chat's setting
+	if true then
+		name = {
+			"complex-deaths.colored",
+			name,
+			color.r,
+			color.g,
+			color.b
+		}
+		color = {r=1,g=1,b=1}
+	end
 
 	send_message({
-		key_group..key, name, gps, killer, weapon or "",
-		killer_color.r, killer_color.g, killer_color.b
+		key_group..key, name, gps, killer, weapon,
 	}, color, "global")
 end
 
