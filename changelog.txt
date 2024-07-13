@@ -1,4 +1,15 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.2.0
+Date: ????
+  Features:
+    - Now has a message for each of the vanilla damage types
+    - Added a setting to toggle between the more complex and theoretically gruesome messages
+  Changes:
+    - Now has different messages for kills attributed to the player dying
+    - Now attributes train deaths to the wagon and its backer_name if it has one (locomotives)
+    - Can now blame a player for train deaths
+      * If there isn't a player directly in the wagon that hit someone, then the killer is determined to be the player in the first-most wagon.
+---------------------------------------------------------------------------------------------------
 Version: 0.1.0
 Date: 2024-03-12
   Changes:
