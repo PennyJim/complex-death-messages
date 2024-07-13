@@ -1,9 +1,9 @@
 data:extend{
 	{
 		type = "bool-setting",
-		name = "complex-deaths-do-gruesome",
+		name = "complex-deaths-basic-messages",
 		setting_type = "runtime-global",
-		default_value = true,
-		order = "global-a[gruesome]"
+		default_value = false,
+		order = "global-a[basic]"
 	},
 }

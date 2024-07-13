@@ -3,7 +3,7 @@ Version: 0.2.0
 Date: ????
   Features:
     - Now has a message for each of the vanilla damage types
-    - Added a setting to toggle between the more complex and theoretically gruesome messages
+    - Added a setting to toggle between the more complex message and basic ones
   Changes:
     - Now has different messages for kills attributed to the player dying
     - Now attributes train deaths to the wagon and its backer_name if it has one (locomotives)
