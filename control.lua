@@ -8,12 +8,12 @@ global = {}
 local basic = false
 
 local death_type_counts = {
-	["physical"]	= 2,
-	["impact"]		= 4,
-	["fire"]			= 3,
-	["acid"]			= 2,
-	["poison"]		= 1,
-	["explosion"]	= 3,
+	["physical"]	= 14,
+	["impact"]		= 8,
+	["fire"]			= 5,
+	["acid"]			= 3,
+	["poison"]		= 5,
+	["explosion"]	= 6,
 	["laser"]			= 2,
 	["electric"]	= 2,
 }
