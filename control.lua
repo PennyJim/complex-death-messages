@@ -7,7 +7,7 @@
 global = {}
 local basic = false
 
-local gruesome_counts = {
+local death_type_counts = {
 	["physical"]	= 2,
 	["impact"]		= 4,
 	["fire"]			= 3,
@@ -79,7 +79,7 @@ local newDeathListener = function (event)
 	if last_damage and last_damage.damage.valid then
 		damage_type = last_damage.damage.name
 	end
-	if not gruesome_counts[damage_type] then
+	if not death_type_counts[damage_type] then
 		log("Unknown damage type: "..damage_type)
 		damage_type = "physical"
 	end
@@ -212,7 +212,7 @@ local newDeathListener = function (event)
 
 	if not basic then
 		key_group = "gruesome-deaths."
-		key = math.random(gruesome_counts[damage_type]).."-"..key
+		key = math.random(death_type_counts[damage_type]).."-"..key
 	end
 
 	-- TODO: Make a setting at some point
