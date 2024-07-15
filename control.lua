@@ -233,6 +233,49 @@ local newDeathListener = function (event)
 	}, color, "global")
 end
 
+---@param event EventData.on_console_command
+script.on_event(defines.events.on_console_command, function (event)
+	if event.command ~= "test-deaths" then return end
+
+	local player = game.get_player(1) --[[@as LuaPlayer]]
+	local name = {
+		"complex-deaths.colored", "PLAYER",
+		player.chat_color.r, player.chat_color.g, player.chat_color.b
+	}
+	local killer = {
+		"complex-deaths.colored", "MURDERER",
+		0.87549018859863, 0.15000000596046, 0.51078432798386,
+	}
+	local weapon = {
+		"complex-deaths.colored", "WEAPON",
+		185, 0, 92,
+	}
+	local color = {r=1,g=1,b=1}
+
+	---@type string
+	local damage_type = event.parameters:match("%S+%s?") or ""
+	if damage_type:find("%S+%s") then
+		damage_type = damage_type:sub(1,-2)
+	end
+	if damage_type == "" or not death_type_counts[damage_type] then
+		return
+	end
+	---@type string
+	local key_type = (event.parameters:match("%s%S+") or ""):sub(2)
+
+	local count = death_type_counts[damage_type]
+	---@type LocalisedString
+	local message = {"", damage_type..":"}
+	local last_index = 2
+	for i = 1, count, 1 do
+		last_index = last_index+1
+		message[last_index] = {"", "\n\t", {
+			"gruesome-deaths."..i.."-"..damage_type..key_type,
+			name, "[gps=0,0]", killer, weapon
+		}}
+	end
+	send_message(message, color, "global")
+end)
 
 script.on_init(function ()
 	global.lastDamage = {}
