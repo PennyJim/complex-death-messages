@@ -2,12 +2,12 @@
 	"name": "complex-death-messages",
 	"title": "Complex Death Messages",
 	"description": "Provides more descriptive death messages. e.g. \"<Player> was killed by <Player> with <Vehicle>\"",
-	"version": "0.2.1",
+	"version": "0.3.0",
 	"author": "PennyJim",
-	"factorio_version": "1.1",
+	"factorio_version": "2.0",
 	"dependencies": [
 		"base >= 1.1.100",
-		"better-chat >= 0.3.1"
+		"better-chat >= 0.4.0"
 	],
   "package": {
     "ignore": [

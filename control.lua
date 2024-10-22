@@ -4,7 +4,7 @@
 
 ---@class ComplexDeathGlobal
 ---@field lastDamage table<integer,damage_info>
-global = {}
+storage = {}
 local basic = false
 
 local death_type_counts = {
@@ -41,9 +41,9 @@ end
 
 ---@param event EventData.on_entity_damaged
 script.on_event(defines.events.on_entity_damaged, function (event)
-	global.lastDamage = global.lastDamage or {} --[[@as table<integer,{damage: LuaDamagePrototype, force: LuaForce?}>]]
+	storage.lastDamage = storage.lastDamage or {} --[[@as table<integer,{damage: LuaDamagePrototype, force: LuaForce?}>]]
 	if not event.entity.name == "character" then return log("Filter is bad!, got "..event.entity.type) end
-	global.lastDamage[event.entity.player.index] = {
+	storage.lastDamage[event.entity.player.index] = {
 		damage = event.damage_type,
 		force = event.force,
 	} --[[@as damage_info]]
@@ -74,7 +74,7 @@ local newDeathListener = function (event)
 	local gps = player.character.gps_tag
 	local color = player.chat_color
 
-	local last_damage = global.lastDamage[player.index]
+	local last_damage = storage.lastDamage[player.index]
 	local damage_type = "physical"
 	if last_damage and last_damage.damage.valid then
 		damage_type = last_damage.damage.name
@@ -278,12 +278,12 @@ script.on_event(defines.events.on_console_command, function (event)
 end)
 
 script.on_init(function ()
-	global.lastDamage = {}
+	storage.lastDamage = {}
 	basic = settings.global["complex-deaths-basic-messages"].value --[[@as boolean]]
 	replace_event(defines.events.on_player_died, newDeathListener)
 end)
 script.on_load(function ()
-	global.lastDamage = global.lastDamage or {}
+	storage.lastDamage = storage.lastDamage or {}
 	basic = settings.global["complex-deaths-basic-messages"].value --[[@as boolean]]
 	replace_event(defines.events.on_player_died, newDeathListener)
 end)
