@@ -1,6 +1,8 @@
 ---@class damage_info
 ---@field damage LuaDamagePrototype
 ---@field force LuaForce?
+---@field driver LuaPlayer?
+---@field gunner LuaPlayer?
 
 ---@class ComplexDeathGlobal
 ---@field lastDamage table<integer,damage_info>
@@ -43,10 +45,30 @@ end
 script.on_event(defines.events.on_entity_damaged, function (event)
 	storage.lastDamage = storage.lastDamage or {} --[[@as table<integer,{damage: LuaDamagePrototype, force: LuaForce?}>]]
 	if not event.entity.name == "character" then return log("Filter is bad!, got "..event.entity.type) end
-	storage.lastDamage[event.entity.player.index] = {
+	---@type damage_info
+	local new_last = {
 		damage = event.damage_type,
 		force = event.force,
-	} --[[@as damage_info]]
+	}
+
+	if event.cause.type == "car" then
+		local driver = event.cause.get_driver()
+		if driver and driver.object_name == "LuaEntity" then
+			driver = driver.associated_player --[[@as LuaPlayer?]]
+		end
+		---@cast driver -LuaEntity
+
+		local gunner = event.cause.get_passenger()
+		if gunner and gunner.object_name == "LuaEntity" then
+			gunner = gunner.associated_player --[[@as LuaPlayer?]]
+		end
+		---@cast gunner -LuaEntity
+
+		new_last.driver = driver
+		new_last.gunner = gunner
+	end
+
+	storage.lastDamage[event.entity.player.index] = new_last
 end, {
 	{
 		filter = "type",
@@ -64,7 +86,6 @@ end, {
 local newDeathListener = function (event)
 	local player = game.get_player(event.player_index)
 	if not player then return log("No one died???") end
-	if not player.character then return log("Player.character doesn't exist on death, change to pre-death") end
 
 	local key_group = "complex-deaths."
 	local key = ""
@@ -106,8 +127,8 @@ local newDeathListener = function (event)
 			killer = cause_player.name
 			killer_color = cause_player.chat_color
 		elseif cause.type == "car" or cause.type == "spider-vehicle" then
-			local driver_entity = cause.get_driver()
-			local gunner_entity = cause.get_passenger()
+			local driver_entity = cause.get_driver() or last_damage.driver
+			local gunner_entity = cause.get_passenger() or last_damage.gunner
 
 			---@type LuaPlayer?, LuaPlayer?
 			local driver, gunner
@@ -283,7 +304,6 @@ script.on_init(function ()
 	replace_event(defines.events.on_player_died, newDeathListener)
 end)
 script.on_load(function ()
-	storage.lastDamage = storage.lastDamage or {}
 	basic = settings.global["complex-deaths-basic-messages"].value --[[@as boolean]]
 	replace_event(defines.events.on_player_died, newDeathListener)
 end)
