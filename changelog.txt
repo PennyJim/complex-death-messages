@@ -3,6 +3,8 @@ Version: 0.3.1
 Date: ????
   Bugfixes:
     - Killing yourself while remote driving a vehicle now properly credits you
+  Locale:
+    - Russian added thanks to @Teppy381
 ---------------------------------------------------------------------------------------------------
 Version: 0.3.0
 Date: 2024-10-22
