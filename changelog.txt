@@ -1,6 +1,6 @@
 ---------------------------------------------------------------------------------------------------
 Version: 0.3.1
-Date: ????
+Date: 2024-12-15
   Bugfixes:
     - Killing yourself while remote driving a vehicle now properly credits you
   Locale:
