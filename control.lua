@@ -51,7 +51,8 @@ script.on_event(defines.events.on_entity_damaged, function (event)
 		force = event.force,
 	}
 
-	if event.cause.type == "car" then
+	--- cause is nilable... Should've realized that
+	if event.cause and event.cause.type == "car" then
 		local driver = event.cause.get_driver()
 		if driver and driver.object_name == "LuaEntity" then
 			driver = driver.associated_player --[[@as LuaPlayer?]]
