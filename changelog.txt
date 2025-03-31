@@ -1,12 +1,13 @@
 ---------------------------------------------------------------------------------------------------
 Version: 0.3.4
 Date: ????
-  Changes:
+  Bugfixes:
+    - Check that the character actually has a player.
 ---------------------------------------------------------------------------------------------------
 Version: 0.3.3
 Date: 2025-02-23
   Bugfixes:
-    - Nil check damage causes to avoid crashes
+    - Nil check damage causes to avoid crashes.
 ---------------------------------------------------------------------------------------------------
 Version: 0.3.2
 Date: 2024-12-22

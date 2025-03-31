@@ -4,7 +4,7 @@
 ---@field driver LuaPlayer?
 ---@field gunner LuaPlayer?
 
----@class ComplexDeathGlobal
+---@class ComplexDeathStorage
 ---@field lastDamage table<integer,damage_info>
 storage = {}
 local basic = false
@@ -44,7 +44,9 @@ end
 ---@param event EventData.on_entity_damaged
 script.on_event(defines.events.on_entity_damaged, function (event)
 	storage.lastDamage = storage.lastDamage or {} --[[@as table<integer,{damage: LuaDamagePrototype, force: LuaForce?}>]]
-	if not event.entity.name == "character" then return log("Filter is bad!, got "..event.entity.type) end
+	local entity = event.entity
+	if not entity.name == "character" then return log("Filter is bad!, got "..entity.type) end
+	if not entity.player then return log("Character not attatched to a player died") end
 	---@type damage_info
 	local new_last = {
 		damage = event.damage_type,
@@ -69,7 +71,7 @@ script.on_event(defines.events.on_entity_damaged, function (event)
 		new_last.gunner = gunner
 	end
 
-	storage.lastDamage[event.entity.player.index] = new_last
+	storage.lastDamage[entity.player.index] = new_last
 end, {
 	{
 		filter = "type",
